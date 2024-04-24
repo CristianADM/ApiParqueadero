@@ -94,6 +94,6 @@ Para hacer login con este usuario es:
 
 ### Autor(es)
 
-Proyecto desarrollado por [Cristian Duarte] (<andresmaldonado6@hotmail.com>).
+Proyecto desarrollado por [Cristian Duarte](<andresmaldonado6@hotmail.com>).
 
   ***
