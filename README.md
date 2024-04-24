@@ -74,6 +74,7 @@ Para ejecutar el proyecto de manera local se debe llevar a cabo los siguientes p
     Se debe clonar el proyecto del [repositorio](https://github.com/CristianADM/ApiParqueadero "repositorio")
     Se abre la consola de comandos
     Se ejecuta el comando: npm install
+    Se debe crear un archivo .env en la carpeta raiz del proyecto.
     Se ejecuta el comando: node app.js el cual ejecutara el proyecto.
     Se prueban los endpoints.
 ```
