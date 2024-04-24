@@ -1,7 +1,7 @@
 const {Sequelize} = require("sequelize"); 
 
-const db = new Sequelize("db_parqueadero", "root", "sasa", {
-    host: "localhost",
+const db = new Sequelize(process.env.NOMBRE_ESQUEMA, process.env.USUARIO, process.env.CONTRASENNA, {
+    host: process.env.HOST,
     dialect: "mysql"
 });
 
