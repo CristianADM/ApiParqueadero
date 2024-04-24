@@ -80,11 +80,24 @@ const noExisteVehiculoRegistrado = async (placa_vehiculo = "") => {
     }
 };
 
+const noExisteVehiculo = async (placa_vehiculo = "") => {
+    const existeVehiculo = await Parqueadero_vehiculo.findOne({
+        where: {
+            placa_vehiculo: placa_vehiculo.toUpperCase()
+        }
+    });
+
+    if(!existeVehiculo){
+        throw new Error(`No existe vehículo registrado con esa placa.`);
+    }
+};
+
 module.exports = {
     existeEmail,
     noExisteEmail,
     noExisteUsuarioPorId,
     noExisteParqueaderoPorId,
     existeVehiculoRegistrado,
-    noExisteVehiculoRegistrado
+    noExisteVehiculoRegistrado,
+    noExisteVehiculo
 }

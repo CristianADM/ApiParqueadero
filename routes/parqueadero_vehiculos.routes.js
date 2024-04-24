@@ -5,7 +5,7 @@ const { consultarParqueaderos } = require('../controllers/parqueadero.controller
 
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJwt } = require('../middlewares/validar-jwt');
-const { noExisteParqueaderoPorId, existeVehiculoRegistrado, noExisteVehiculoRegistrado } = require('../helpers/db-validators');
+const { noExisteParqueaderoPorId, existeVehiculoRegistrado, noExisteVehiculoRegistrado, noExisteEmail, noExisteVehiculo } = require('../helpers/db-validators');
 const { tieneRol } = require('../middlewares/validar-roles');
 
 const { ROLES, ESTADOS } = require('../helpers/constantes');
@@ -43,8 +43,9 @@ router.post('/enviarCorreo', [
     validarJwt,
     tieneRol(ROLES.administrador),
     check("email", "El email es obligatorio").isEmail(),
+    check("email").custom(noExisteEmail),
     check("placa", "La placa no es valida").matches(/^[a-zA-Z0-9]{6}$/),
-    check("placa").custom,
+    check("placa").custom(noExisteVehiculo),
     check("mensaje", "El mensaje no puede ser vacio").notEmpty(),
     check("parqueaderoid").custom(noExisteParqueaderoPorId),
     validarCampos
