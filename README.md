@@ -95,7 +95,7 @@ Para hacer login con este usuario es:
 ### Documentación de los enpoints
 - [Enpoints](https://documenter.getpostman.com/view/21358234/2sA3BobY2m "Enpoints")
 
-**Nota:** Para el envío de correo el proyecto [Api Email](https://github.com/CristianADM/ApiParqueadero) debe estar en funcionamiento también. 
+**Nota:** Para el envío de correo el proyecto [Api Email](https://github.com/CristianADM/ApiParqueadero) debe estar en funcionamiento también en un puerto diferente al de esta aplicación. 
 
 ***
 
