@@ -13,7 +13,6 @@ class Server {
         this.parqueaderosPath = '/api/parqueaderos';
         this.parqueaderosVehiculosPath = '/api/parqueaderosVehiculos';
         this.indicadoresPath = '/api/indicadores';
-        this.emailApiPath = '/api/emailapi';
 
         //conexion con la base de datos 
         this.dbConexion();
@@ -52,7 +51,6 @@ class Server {
         this.app.use( this.parqueaderosPath, require('../routes/parqueadero.routes'));
         this.app.use( this.parqueaderosVehiculosPath, require('../routes/parqueadero_vehiculos.routes'));
         this.app.use( this.indicadoresPath, require('../routes/indicadores.routes'));
-        this.app.use( this.emailApiPath, require('../routes/email.routes'));
     }
 
     listen() {

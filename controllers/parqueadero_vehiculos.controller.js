@@ -196,7 +196,7 @@ const enviarCorreo = async (req = request, res = response) => {
     }
 
         // URL del endpoint al que deseas enviar la solicitud POST
-        const apiUrl = 'http://localhost:8080/api/emailapi/';
+        const apiUrl = 'http://localhost:8000/api/emailapi/';
 
         // Datos que deseas enviar en el cuerpo de la solicitud
         const postData = {
