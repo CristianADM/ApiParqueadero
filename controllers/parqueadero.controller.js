@@ -1,5 +1,5 @@
 const { response, request } = require('express');
-const { Parqueadero, Usuario } = require('../models');
+const { Parqueadero, Usuario, Parqueadero_vehiculo } = require('../models');
 const { ESTADOS } = require('../helpers/constantes');
 
 
@@ -69,10 +69,11 @@ const consultarParqueaderosPorIdSocio = async (req = request, res = response) =>
 }
 
 const crearParqueadero = async (req = request, res = response) => {
-    const { valor_hora, capacidad_vehiculos, id_usuario } = req.body;
+    const { nombre, valor_hora, capacidad_vehiculos, id_usuario } = req.body;
 
     try {
         const parqueadero = await Parqueadero.create({
+            nombre,
             valor_hora,
             capacidad_vehiculos,
             espacios_disponibles: capacidad_vehiculos,
@@ -92,12 +93,48 @@ const crearParqueadero = async (req = request, res = response) => {
 
 const actualizarParqueadero = async (req, res = response) => {
     const {id} = req.params;
-    const {body} = req;
+    const {nombre, valor_hora, capacidad_vehiculos, id_usuario} = req.body;
 
     try {
+
+        let cuerpo = {};
+
+        if(nombre) {
+            cuerpo.nombre = nombre;
+        }
+
+        if(valor_hora) {
+            cuerpo.valor_hora = valor_hora;
+        }
+
+        if(capacidad_vehiculos) {
+
+            const cantidadVehiculosActivos = await Parqueadero_vehiculo.count({
+                where: {
+                  id_parqueadero: id,
+                  estado_activo: true
+                },
+              });
+
+            const espacios_disponibles = capacidad_vehiculos - cantidadVehiculosActivos;
+
+            if(espacios_disponibles < 0) {
+                return res.status(400).json({
+                    mensaje: "La capacidad de vehículos es menor a los vehículos registrados."
+                });
+            }
+
+            cuerpo.capacidad_vehiculos = capacidad_vehiculos;
+            cuerpo.espacios_disponibles = espacios_disponibles;
+        }
+
+        if(id_usuario) {
+            cuerpo.id_usuario = id_usuario;
+        }
+
         const parqueadero = await Parqueadero.findByPk(id);
 
-        await parqueadero.update(body);
+        await parqueadero.update(cuerpo);
         res.json({
             parqueadero
         });

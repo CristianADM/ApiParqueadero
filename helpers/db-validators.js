@@ -52,6 +52,34 @@ const noExisteParqueaderoPorId = async (id = "") => {
     }
 };
 
+//Validar que existe un parqueadero con el mismo nombre
+const existeParqueaderoPorNombre = async (parqueadero_nombre = "") => {
+    const existeParqueadero = await Parqueadero.findOne({
+        where: {
+            nombre: parqueadero_nombre,
+            estado_activo: ESTADOS.activo.boolean
+        }
+    });
+
+    if(existeParqueadero){
+        throw new Error(`Ya existe un parqueadero registrado con ese nombre`);
+    }
+};
+
+//Validar que existe parqueadero por nombre
+const noExisteParqueaderoPorNombre = async (parqueadero_nombre = "") => {
+    const existeParqueadero = await Parqueadero.findOne({
+        where: {
+            nombre: parqueadero_nombre,
+            estado_activo: ESTADOS.activo.boolean
+        }
+    });
+
+    if(!existeParqueadero){
+        throw new Error(`No existe parqueadero con ese nombre`);
+    }
+};
+
 //Validar que ya existe un vehiculo ingresado
 const existeVehiculoRegistrado = async (placa_vehiculo = "") => {
     const existeVehiculo = await Parqueadero_vehiculo.findOne({
@@ -97,6 +125,8 @@ module.exports = {
     noExisteEmail,
     noExisteUsuarioPorId,
     noExisteParqueaderoPorId,
+    noExisteParqueaderoPorNombre,
+    existeParqueaderoPorNombre,
     existeVehiculoRegistrado,
     noExisteVehiculoRegistrado,
     noExisteVehiculo

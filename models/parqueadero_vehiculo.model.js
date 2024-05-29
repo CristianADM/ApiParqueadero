@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const db = require("../db/conexion");
 
-const Parqueadero_vehiculo = db.define("Parqueadero_vehiculo", {
+const Parqueadero_vehiculo = db.define("parqueadero_vehiculo", {
         id_parqueadero_vehiculo: {
             primaryKey: true,
             autoIncrement: true,

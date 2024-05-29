@@ -11,7 +11,7 @@ class Server {
         this.usuariosPath = '/api/usuarios';
         this.authPath = '/api/auth';
         this.parqueaderosPath = '/api/parqueaderos';
-        this.parqueaderosVehiculosPath = '/api/parqueaderosVehiculos';
+        this.parqueaderosVehiculosPath = '/api/parqueaderos-vehiculos';
         this.indicadoresPath = '/api/indicadores';
 
         //conexion con la base de datos 

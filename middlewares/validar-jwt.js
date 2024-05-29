@@ -5,13 +5,21 @@ const { ESTADOS } = require("../helpers/constantes");
 
 const validarJwt = async (req, res, next) => {
 
-    const token = req.header('x-token');
+    if (!req.headers.authorization) {
+        return res.status(401).json({
+            mensaje: "No hay token en la petición"
+        });
+    }
+
+    const token = req.headers.authorization.split(" ")[1]
+
+    /*const token = req.header('x-token');
 
     if(!token) {
         return res.status(401).json({
             mensaje: "No hay token en la petición"
         });
-    }
+    }*/
 
     try {
 

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
--- Host: localhost    Database: db_prueba_parqueadero
+-- Host: localhost    Database: parqueadero
 -- ------------------------------------------------------
--- Server version	8.0.34
+-- Server version	8.0.37
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `parqueadero`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `parqueadero` (
   `id_parqueadero` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
   `valor_hora` decimal(10,0) NOT NULL,
   `capacidad_vehiculos` int NOT NULL,
   `espacios_disponibles` int NOT NULL,
@@ -34,7 +35,7 @@ CREATE TABLE `parqueadero` (
   PRIMARY KEY (`id_parqueadero`),
   KEY `fk_parqueaderosocio_usuario_idx` (`id_usuario`),
   CONSTRAINT `fk_parqueaderosocio_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +67,7 @@ CREATE TABLE `parqueadero_vehiculo` (
   PRIMARY KEY (`id_parqueadero_vehiculo`),
   KEY `fk_parqueaderovehiculo_parqueadero_idx` (`id_parqueadero`),
   CONSTRAINT `fk_parqueaderovehiculo_parqueadero` FOREIGN KEY (`id_parqueadero`) REFERENCES `parqueadero` (`id_parqueadero`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +94,7 @@ CREATE TABLE `sesion` (
   `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
   `fecha_modificacion` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_sesion`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +123,7 @@ CREATE TABLE `usuario` (
   `fecha_creacion` datetime DEFAULT CURRENT_TIMESTAMP,
   `fecha_modificacion` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,4 +145,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-04-23 20:12:31
+-- Dump completed on 2024-05-29 15:08:08

@@ -18,7 +18,7 @@ const RANGO_TIEMPO = {
     hoy: "hoy",
     semana: "semana",
     mes: "mes",
-    year: "year"
+    año: "año"
 }
 
 module.exports = {

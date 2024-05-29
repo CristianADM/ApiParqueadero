@@ -2,16 +2,29 @@ const { response, request } = require('express');
 const { Parqueadero_vehiculo, Parqueadero } = require('../models');
 const { Sequelize, Op, QueryTypes } = require('sequelize');
 const db = require('../db/conexion');
-const { ESTADOS, RANGO_TIEMPO } = require('../helpers/constantes');
+const { ESTADOS, RANGO_TIEMPO, ROLES } = require('../helpers/constantes');
 
 const consultarLosVechiculosMasRegistrados = async (req = request, res = response) => {
+
+    let busqueda = {
+        attributes: [[Sequelize.fn('COUNT', 'placa_vehiculo'), 'total_ingresos'], "placa_vehiculo"],
+        group: ['placa_vehiculo'],
+        order: [[Sequelize.literal('total_ingresos'), 'DESC']],
+        limit: 10,
+    };
+
+    if(req.usuario.rol == ROLES.socio) {
+        busqueda.include = {
+            model: Parqueadero,
+            where: {
+                id_usuario: req.usuario.id_usuario
+            },
+            attributes: []
+        };
+    }
+
     try {
-        const vehiculos = await Parqueadero_vehiculo.findAll({
-            attributes: [[Sequelize.fn('COUNT', 'placa_vehiculo'), 'total_ingresos'], "placa_vehiculo"],
-            group: ['placa_vehiculo'],
-            order: [[Sequelize.literal('total_ingresos'), 'DESC']],
-            limit: 10,
-        });
+        const vehiculos = await Parqueadero_vehiculo.findAll(busqueda);
 
         res.json({
             vehiculos
@@ -26,16 +39,29 @@ const consultarLosVechiculosMasRegistrados = async (req = request, res = respons
 
 const consultarLosVechiculosMasRegistradosPorParqueadero = async (req = request, res = response) => {
     const {id} = req.params;
-    try {
-        const vehiculos = await Parqueadero_vehiculo.findAll({
-            attributes: [[Sequelize.fn('COUNT', 'placa_vehiculo'), 'total_ingresos'], "placa_vehiculo"],
+
+    let busqueda = {
+        attributes: [[Sequelize.fn('COUNT', 'placa_vehiculo'), 'total_ingresos'], "placa_vehiculo"],
+        where: {
+            id_parqueadero: id
+        },
+        group: ['placa_vehiculo'],
+        order: [[Sequelize.literal('total_ingresos'), 'DESC']],
+        limit: 10,
+    };
+
+    if(req.usuario.rol == ROLES.socio) {
+        busqueda.include = {
+            model: Parqueadero,
             where: {
-                id_parqueadero: id
+                id_usuario: req.usuario.id_usuario
             },
-            group: ['placa_vehiculo'],
-            order: [[Sequelize.literal('total_ingresos'), 'DESC']],
-            limit: 10,
-        });
+            attributes: []
+        };
+    }
+
+    try {
+        const vehiculos = await Parqueadero_vehiculo.findAll(busqueda);
 
         res.json({
             vehiculos
@@ -50,15 +76,36 @@ const consultarLosVechiculosMasRegistradosPorParqueadero = async (req = request,
 
 const consultarLosVechiculosPrimeraVezPorParqueadero = async (req = request, res = response) => {
     const {id} = req.params;
-    try {
-        const vehiculos = await db.query(`SELECT * FROM parqueadero_vehiculo pv
+
+    let select = `SELECT * FROM parqueadero_vehiculo pv
+    WHERE pv.placa_vehiculo in (SELECT pv.placa_vehiculo
+    FROM parqueadero_vehiculo pv 
+    GROUP BY pv.placa_vehiculo 
+    HAVING COUNT(pv.placa_vehiculo) = 1)
+    and pv.estado_activo = 1 
+    and pv.id_parqueadero = ?`;
+
+    let attBusqueda = [id];
+
+    if(req.usuario.rol == ROLES.socio) {
+        select = `SELECT * FROM parqueadero_vehiculo pv
+        INNER JOIN parqueadero p
+        ON p.id_parqueadero = pv.id_parqueadero
         WHERE pv.placa_vehiculo in (SELECT pv.placa_vehiculo
         FROM parqueadero_vehiculo pv 
         GROUP BY pv.placa_vehiculo 
         HAVING COUNT(pv.placa_vehiculo) = 1)
         and pv.estado_activo = 1 
-        and pv.id_parqueadero = ${id}`,
+        and pv.id_parqueadero = ?
+        and p.id_usuario = ?`;
+
+        attBusqueda.push(req.usuario.id_usuario);
+    }
+
+    try {
+        const vehiculos = await db.query(select,
         {
+            replacements: attBusqueda,
             type: QueryTypes.SELECT
         });
 
@@ -99,8 +146,9 @@ const consultarGananciasParqueadero = async (req = request, res = response) => {
     const {id} = req.params;
     const {rango_tiempo} = req.query;
     try {
-
         const usuario = req.usuario;
+
+        console.log(usuario);
 
         const parqueadero = await Parqueadero.findByPk(id);
 
@@ -127,7 +175,6 @@ const consultarGananciasParqueadero = async (req = request, res = response) => {
             }
 
         } else if(rango_tiempo == RANGO_TIEMPO.semana) {
-            //inicioSemanaActual.setDate(inicioSemanaActual.getDate() - inicioSemanaActual.getDay()); // Inicio de la semana (domingo)
             let inicioSemana = new Date();
             inicioSemana.setDate(inicioSemana.getDate() - 6);
             console.log("Desde donde arranca: ", inicioSemana);
@@ -151,7 +198,7 @@ const consultarGananciasParqueadero = async (req = request, res = response) => {
                 [Op.between]: [inicioMesActual, finMesActual]
             };
 
-        } else if(rango_tiempo == RANGO_TIEMPO.year) {
+        } else if(rango_tiempo == RANGO_TIEMPO.año) {
             // Primer día del año actual
             const inicioAñoActual = new Date(new Date().getFullYear(), 0, 1); 
             

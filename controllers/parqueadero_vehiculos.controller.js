@@ -34,9 +34,6 @@ const consultarVechiculosPorParqueadero = async (req = request, res = response) 
                 },
                 where: busquedas,
                 order: [["estado_activo", "DESC"]],
-                include: {
-                    model: Parqueadero
-                },
                 offset: Number(desde),
                 limit: Number(limite)
             });
@@ -48,7 +45,8 @@ const consultarVechiculosPorParqueadero = async (req = request, res = response) 
                     model: Parqueadero,
                     where: {
                         id_usuario: usuario.id_usuario
-                    }
+                    },
+                    attributes: []
                 },
                 offset: Number(desde),
                 limit: Number(limite)
@@ -172,12 +170,19 @@ const salidaVehiculoParqueadero = async (req, res = response) => {
 
 const enviarCorreo = async (req = request, res = response) => {
 
-    const {email, placa, mensaje, parqueaderoid} = req.body;
+    const {email, placa, mensaje, parqueadero_nombre} = req.body;
+    let parqueadero;
     try {
+
+        parqueadero = await Parqueadero.findOne({
+            where: {
+                nombre: parqueadero_nombre
+            }
+        });
 
         const parqueadero_vehiculo = await Parqueadero_vehiculo.findOne({
             where: {
-                id_parqueadero: parqueaderoid,
+                id_parqueadero: parqueadero.id_parqueadero,
                 placa_vehiculo: placa
             }
         });
@@ -196,14 +201,14 @@ const enviarCorreo = async (req = request, res = response) => {
     }
 
         // URL del endpoint al que deseas enviar la solicitud POST
-        const apiUrl = 'http://localhost:8000/api/emailapi/';
+        const apiUrl = process.env.URLENVIARCORREO;
 
         // Datos que deseas enviar en el cuerpo de la solicitud
         const postData = {
             email,
             placa,
             mensaje,
-            parqueaderoid
+            parqueaderoid: parqueadero.id_parqueadero
         };
 
         
@@ -218,11 +223,8 @@ const enviarCorreo = async (req = request, res = response) => {
                 mensaje: response.data.mensaje // Accede a los datos de la respuesta
             });
         } catch (error) {
-            // Manejar errores aquí
-            console.error(error);
-            return res.status(500).json({
-                mensaje: "Con error",
-                error: error.message // Accede al mensaje de error
+            return res.status(502).json({
+                mensaje: "La api no está disponible hable con el administrador!"
             });
         }
 }

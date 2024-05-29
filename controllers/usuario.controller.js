@@ -4,12 +4,13 @@ const { Usuario } = require('../models');
 const { ROLES } = require('../helpers/constantes');
 
 const crearUsuario = async (req = request, res = response) => {
-    const { correo, contrasenna, nombre } = req.body;
+    const { correo, nombre } = req.body;
+    const pwd = req.body.contrasenna;
 
     try {
         //Encriptar la contraseña
         const salt = bcryptjs.genSaltSync();
-        passwordEncriptada = bcryptjs.hashSync(contrasenna.trim(), salt);
+        const passwordEncriptada = bcryptjs.hashSync(pwd.trim(), salt);
 
         const usuario = await Usuario.create({
             correo: correo.trim(),
@@ -17,8 +18,10 @@ const crearUsuario = async (req = request, res = response) => {
             nombre: nombre.trim()
         });
 
+        const {contrasenna, ...usuarioSinContrasena} = usuario.dataValues;
+
         res.json({
-            usuario
+            usuarioSinContrasena
         });
     } catch (error) {
         console.log(error);

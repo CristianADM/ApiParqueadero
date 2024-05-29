@@ -78,6 +78,9 @@ Se debe ejecutar el script de base de datos db_parqueadero.sql que contiene la c
     ----jwt----
     DURACIONTOKEN: Duración del token por ejemplo: 6h
     SECRETKEY: Token secreto para jwt (ejemplo. Tok3nF4ls0)
+
+    ----enviar correo----
+    URLENVIARCORREO: Url del api de enviar correos
   ```
 - Se abre la consola de comandos.
 - Se ejecuta el comando: npm install

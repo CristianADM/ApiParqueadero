@@ -8,7 +8,7 @@ const tieneRol = (...roles) => {
         }
 
         if(!roles.includes(req.usuario.rol)) {
-            return res.status(401).json({
+            return res.status(403).json({
                 mensaje: "No posee autorizacion para este servicio"
             });
         }

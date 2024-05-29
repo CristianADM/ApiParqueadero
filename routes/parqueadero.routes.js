@@ -3,9 +3,9 @@ const { check } = require('express-validator');
 
 const { crearParqueadero, consultarParqueaderos, actualizarParqueadero, eliminarParqueadero, consultarParqueaderosPorIdSocio } = require('../controllers/parqueadero.controller');
 
-const { validarCampos } = require('../middlewares/validar-campos');
+const { validarCampos, validarRecursos } = require('../middlewares/validar-campos');
 const { validarJwt } = require('../middlewares/validar-jwt');
-const { noExisteUsuarioPorId, noExisteParqueaderoPorId } = require('../helpers/db-validators');
+const { noExisteUsuarioPorId, noExisteParqueaderoPorId, existeParqueaderoPorNombre } = require('../helpers/db-validators');
 const { tieneRol } = require('../middlewares/validar-roles');
 
 const { ROLES } = require('../helpers/constantes');
@@ -29,27 +29,35 @@ router.get('/socio', [
 router.post('/', [
     validarJwt,
     tieneRol(ROLES.administrador),
+    check("nombre", "El nombre es obligatorio").not().isEmpty(),
+    check("nombre", "El nombre debe tener maximo 100 caracteres").isLength({max:100}),
     check("valor_hora", "El valor_hora no es un valor valido").isFloat({gt: 0}),
     check("capacidad_vehiculos", "La capacidad_vehiculos no es un valor valido").isInt({gt: 0}),
+    validarCampos,
+    check("nombre").custom(existeParqueaderoPorNombre),
     check("id_usuario").custom(noExisteUsuarioPorId),
-    validarCampos
+    validarRecursos
 ], crearParqueadero);
 
 router.put('/:id', [
     validarJwt,
     tieneRol(ROLES.administrador),
-    check("id").custom(noExisteParqueaderoPorId),
+    check("nombre", "El nombre debe tener maximo 100 caracteres").optional().isLength({max:100}),
+    check("nombre").optional().custom(existeParqueaderoPorNombre),
     check("valor_hora", "El valor_hora no es un valor valido").optional().isFloat({gt: 0}),
     check("capacidad_vehiculos", "La capacidad_vehiculos no es un valor valido").optional().isInt({gt: 0}),
+    validarCampos,
+    check("id").custom(noExisteParqueaderoPorId),
     check("id_usuario").optional().custom(noExisteUsuarioPorId),
-    validarCampos
+    validarRecursos
 ], actualizarParqueadero);
 
 router.delete('/:id', [
     validarJwt,
     tieneRol(ROLES.administrador),
+    validarCampos,
     check("id").custom(noExisteParqueaderoPorId),
-    validarCampos
+    validarRecursos
 ], eliminarParqueadero);
 
 module.exports = router;

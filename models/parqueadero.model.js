@@ -7,6 +7,10 @@ const Parqueadero = db.define("parqueadero", {
             autoIncrement: true,
             type: DataTypes.INTEGER
         },
+        nombre: {
+            allowNull: false,
+            type: DataTypes.STRING
+        },
         valor_hora: {
             allowNull: false,
             type: DataTypes.DOUBLE
