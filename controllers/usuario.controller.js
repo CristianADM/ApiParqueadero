@@ -64,7 +64,7 @@ const actualizarUsuario = async (req, res = response) => {
         if(contrasenna) {
             //Encriptar la contraseña
             const salt = bcryptjs.genSaltSync();
-            passwordEncriptada = bcryptjs.hashSync(contrasenna.trim(), salt);
+            const passwordEncriptada = bcryptjs.hashSync(contrasenna.trim(), salt);
             body.contrasenna = passwordEncriptada;
         }
 
